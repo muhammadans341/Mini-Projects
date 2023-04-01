@@ -1,0 +1,7 @@
+.DS_Store
+.idea
+*.iws
+*.iml
+*.ipr
+*mvn*
+
