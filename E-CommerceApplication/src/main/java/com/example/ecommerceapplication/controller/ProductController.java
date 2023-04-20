@@ -1,6 +1,7 @@
 package com.example.ecommerceapplication.controller;
+
 import com.example.ecommerceapplication.dto.ProductDTO;
-import com.example.ecommerceapplication.model.Product;
+import com.example.ecommerceapplication.response.ProductsResponse;
 import com.example.ecommerceapplication.service.CategoryService;
 import com.example.ecommerceapplication.service.ProductService;
 import org.springframework.http.HttpStatus;
@@ -35,8 +36,10 @@ public class ProductController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<ProductDTO>> getAllProducts(){
-        return new ResponseEntity<>(productService.getAllProducts(),HttpStatus.OK);
+    public ResponseEntity<ProductsResponse> getAllProducts(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                           @RequestParam(defaultValue = "10") Integer pageSize,
+                                                           @RequestParam(defaultValue = "id") String sortBy){
+        return new ResponseEntity<>(productService.getAllProducts(pageNo,pageSize,sortBy),HttpStatus.OK);
     }
 
     @DeleteMapping("/{productId}")

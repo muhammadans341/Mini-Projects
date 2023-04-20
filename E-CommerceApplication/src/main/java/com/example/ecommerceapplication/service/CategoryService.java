@@ -5,10 +5,13 @@ import com.example.ecommerceapplication.dto.CategoryDTO;
 import com.example.ecommerceapplication.model.Category;
 import com.example.ecommerceapplication.repository.CetagoryRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,8 +44,9 @@ public class CategoryService {
         return category.map(Util::toCatDTO).orElse(null);
     }
 
-    public List<CategoryDTO> getAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
+    public List<CategoryDTO> getAllCategories(Integer pageNo, Integer pageSize, String sortBy) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<Category> categories = categoryRepository.findAll(paging);
         return categories.stream().map(Util::toCatDTO).collect(Collectors.toList());
     }
 }

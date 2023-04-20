@@ -48,8 +48,10 @@ public class CategoryController {
     }
 
     @GetMapping("/fetch")
-    public ResponseEntity<List<CategoryDTO>> getCategoryById(){
-        List<CategoryDTO> result= categoryService.getAllCategories();
+    public ResponseEntity<List<CategoryDTO>> getAllCategories(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                             @RequestParam(defaultValue = "10") Integer pageSize,
+                                                             @RequestParam(defaultValue = "id") String sortBy){
+        List<CategoryDTO> result= categoryService.getAllCategories(pageNo,pageSize,sortBy);
         if(result!=null && result.size()!=0){
             return new ResponseEntity<>(result, HttpStatus.OK);
         }

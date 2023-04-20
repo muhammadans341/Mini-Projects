@@ -3,11 +3,17 @@ package com.example.ecommerceapplication.service;
 import com.example.ecommerceapplication.Exception.ProductNotFoundException;
 import com.example.ecommerceapplication.Util;
 import com.example.ecommerceapplication.dto.ProductDTO;
+import com.example.ecommerceapplication.model.Category;
 import com.example.ecommerceapplication.model.Product;
 import com.example.ecommerceapplication.repository.CetagoryRepository;
 import com.example.ecommerceapplication.repository.ProductRepository;
+import com.example.ecommerceapplication.response.ProductsResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,7 +60,16 @@ public class ProductService {
        return null;
     }
 
-    public List<ProductDTO> getAllProducts(){
-        return productRepository.findAll().stream().map(Util::toDTO).collect(Collectors.toList());
+    public ProductsResponse getAllProducts(Integer pageNo, Integer pageSize, String sortBy){
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<Product> productsPages = productRepository.findAll(paging);
+        List<ProductDTO> productsDTO =  productsPages.stream().map(Util::toDTO).collect(Collectors.toList());
+
+        return ProductsResponse.builder().content(productsDTO)
+                .pageNumber(productsPages.getNumber())
+                .totalPages(productsPages.getTotalPages())
+                .pageSize(productsPages.getSize())
+                .isLast(productsPages.isLast())
+                .build();
     }
 }
