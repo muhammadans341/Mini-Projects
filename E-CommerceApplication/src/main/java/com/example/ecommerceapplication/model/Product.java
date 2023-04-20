@@ -1,6 +1,9 @@
 package com.example.ecommerceapplication.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 @Data
@@ -12,7 +15,7 @@ public class Product {
     private Long id;
     @Column(name = "product_name")
     private String name;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="category_id")
     private Category category;
     private BigDecimal price;

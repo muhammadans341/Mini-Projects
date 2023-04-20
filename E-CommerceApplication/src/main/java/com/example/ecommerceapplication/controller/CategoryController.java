@@ -1,7 +1,6 @@
 package com.example.ecommerceapplication.controller;
 
 import com.example.ecommerceapplication.dto.CategoryDTO;
-import com.example.ecommerceapplication.model.Category;
 import com.example.ecommerceapplication.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

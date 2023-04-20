@@ -57,4 +57,12 @@ public class ProductController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<ProductsResponse> getAllProductsByCategory(@PathVariable Long categoryId,
+                                                            @RequestParam(defaultValue = "0") Integer pageNo,
+                                                           @RequestParam(defaultValue = "2") Integer pageSize,
+                                                           @RequestParam(defaultValue = "id") String sortBy){
+        return new ResponseEntity<>(productService.findByCategoryIdNative(pageNo,pageSize,sortBy,categoryId),HttpStatus.OK);
+    }
 }

@@ -5,10 +5,8 @@ import com.example.ecommerceapplication.dto.ProductDTO;
 import com.example.ecommerceapplication.model.Category;
 import com.example.ecommerceapplication.model.Product;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.beans.PropertyDescriptor;
 import java.util.HashSet;
