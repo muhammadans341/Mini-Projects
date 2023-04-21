@@ -65,7 +65,7 @@ public class ProductService {
         Page<Product> productsPages = productRepository.findAll(paging);
         List<ProductDTO> productsDTO =  productsPages.stream().map(Util::toDTO).collect(Collectors.toList());
 
-        return ProductsResponse.builder().content(productsDTO)
+        return ProductsResponse.builder().products(productsDTO)
                 .pageNumber(productsPages.getNumber())
                 .totalPages(productsPages.getTotalPages())
                 .pageSize(productsPages.getSize())
@@ -78,7 +78,7 @@ public class ProductService {
         Page<Product> productsPages = productRepository.findByCategory(category,paging);
         List<ProductDTO> productsDTO =  productsPages.stream().map(Util::toDTO).collect(Collectors.toList());
 
-        return ProductsResponse.builder().content(productsDTO)
+        return ProductsResponse.builder().products(productsDTO)
                 .pageNumber(productsPages.getNumber())
                 .totalPages(productsPages.getTotalPages())
                 .pageSize(productsPages.getSize())
@@ -91,7 +91,7 @@ public class ProductService {
         Page<Product> productsPages = productRepository.findByCategoryIdWithPagination(categoryId,paging);
         List<ProductDTO> productsDTO =  productsPages.stream().map(Util::toDTO).collect(Collectors.toList());
 
-        return ProductsResponse.builder().content(productsDTO)
+        return ProductsResponse.builder().products(productsDTO)
                 .pageNumber(productsPages.getNumber())
                 .totalPages(productsPages.getTotalPages())
                 .pageSize(productsPages.getSize())
