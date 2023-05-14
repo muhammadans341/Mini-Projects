@@ -6,6 +6,7 @@ import com.example.ecommerceapplication.dto.UserDTO;
 import com.example.ecommerceapplication.enums.Gender;
 import com.example.ecommerceapplication.model.Category;
 import com.example.ecommerceapplication.model.Product;
+import com.example.ecommerceapplication.model.Role;
 import com.example.ecommerceapplication.model.User;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -16,43 +17,49 @@ import org.springframework.beans.BeanWrapperImpl;
 import java.beans.PropertyDescriptor;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Util {
     static ModelMapper modelMapper = new ModelMapper();
-    static{
-        Converter<Gender,String> converter1 = mappingContext -> mappingContext.getSource().getGenderValue();
-        modelMapper.addConverter(converter1);
-    }
-
 
     public static Product toEntity(ProductDTO productDTO){
-        Product product = modelMapper.map(productDTO,Product.class);
-        return product;
+        return modelMapper.map(productDTO,Product.class);
     }
 
     public static ProductDTO toDTO(Product product){
-        ProductDTO productDTO = modelMapper.map(product,ProductDTO.class);
-        return productDTO;
+        return modelMapper.map(product,ProductDTO.class);
     }
 
     public static User toUserEntity(UserDTO userDTO){
-        User user = modelMapper.map(userDTO,User.class);
-        return user;
+        TypeMap<UserDTO, User> typeMap = modelMapper.getTypeMap(UserDTO.class, User.class);
+        if(typeMap==null) {
+            typeMap = modelMapper.createTypeMap(UserDTO.class, User.class);
+            Converter<Gender, String> genderStringConverter = mappingContext -> mappingContext.getSource().getGenderValue();
+            Converter<Set<String>,Set<Role>> rolesConvertor = mappingContext -> mappingContext.getSource().stream().map(roleName ->{
+                Role role = new Role();
+                role.setRoleName(roleName);
+                return role;
+            }).collect(Collectors.toSet());
+            typeMap.addMappings(mapper -> mapper.using(genderStringConverter).map(UserDTO::getGender, User::setGender));
+            typeMap.addMappings(mapper -> mapper.using(rolesConvertor).map(UserDTO::getRoles,User::setRoles));
+        }
+        return modelMapper.map(userDTO,User.class);
     }
 
     public static UserDTO toUserDTO(User user){
         TypeMap<User, UserDTO> typeMap = modelMapper.getTypeMap(User.class, UserDTO.class);
         if(typeMap==null){
             typeMap = modelMapper.createTypeMap(User.class, UserDTO.class);
-            Converter<String,Gender> converter2 = mappingContext-> Stream.of(Gender.values())
+            Converter<String,Gender> stringGenderConverter = mappingContext-> Stream.of(Gender.values())
                     .filter(gender -> gender.getGenderValue().equals(mappingContext.getSource()))
                     .findFirst()
                     .orElse(Gender.OTHER);
-            typeMap.addMappings(mapper -> mapper.using(converter2).map(User::getGender, UserDTO::setGender));
+            Converter<Set<Role>,Set<String>> roleConvertor= mappingContext -> mappingContext.getSource().stream().map(Role::getRoleName).collect(Collectors.toSet());
+            typeMap.addMappings(mapper -> mapper.using(stringGenderConverter).map(User::getGender, UserDTO::setGender));
+            typeMap.addMappings(mapper -> mapper.using(roleConvertor).map(User::getRoles,UserDTO::setRoles));
         }
-        UserDTO userDTO = modelMapper.map(user,UserDTO.class);
-        return userDTO;
+        return modelMapper.map(user,UserDTO.class);
     }
 
     public static Category toCatEntity(CategoryDTO categoryDTO) {

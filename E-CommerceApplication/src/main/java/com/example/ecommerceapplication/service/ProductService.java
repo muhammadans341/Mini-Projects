@@ -37,14 +37,11 @@ public class ProductService {
 
     public ProductDTO getProduct(Long productId){
        Optional<Product> product = productRepository.findById(productId);
-       if(product.isPresent()){
-           return Util.toDTO(product.get());
-       }
-       return null;
+        return product.map(Util::toDTO).orElse(null);
     }
 
     public void deleteProductById(Long productId){
-        Product product = productRepository.findById(productId).orElseThrow(()-> new ProductNotFoundException("Product not found for deletion"));
+        productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found for deletion"));
         productRepository.deleteById(productId);
     }
 

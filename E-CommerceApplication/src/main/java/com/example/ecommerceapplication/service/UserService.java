@@ -3,10 +3,8 @@ package com.example.ecommerceapplication.service;
 import com.example.ecommerceapplication.Exception.ProductNotFoundException;
 import com.example.ecommerceapplication.Util;
 import com.example.ecommerceapplication.dto.UserDTO;
-import com.example.ecommerceapplication.model.Product;
 import com.example.ecommerceapplication.model.User;
 import com.example.ecommerceapplication.repository.UserRepository;
-import com.example.ecommerceapplication.response.ProductsResponse;
 import com.example.ecommerceapplication.response.UserResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -25,13 +24,18 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     UserRepository userRepository;
+
+    PasswordEncoder passwordEncoder;
     @Autowired
-    UserService(UserRepository userRepository){
+    UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
         this.userRepository=userRepository;
+        this.passwordEncoder=passwordEncoder;
     }
     public UserDTO createUser(UserDTO userDTO){
         User user = Util.toUserEntity(userDTO);
         user.setDate(new Date());
+        String encodedPassword = this.passwordEncoder.encode(userDTO.getPassword());
+        user.setPassword(encodedPassword);
         return Util.toUserDTO(userRepository.save(user));
     }
 
