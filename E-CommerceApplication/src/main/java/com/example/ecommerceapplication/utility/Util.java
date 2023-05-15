@@ -1,4 +1,4 @@
-package com.example.ecommerceapplication;
+package com.example.ecommerceapplication.utility;
 
 import com.example.ecommerceapplication.dto.CategoryDTO;
 import com.example.ecommerceapplication.dto.ProductDTO;

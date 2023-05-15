@@ -1,7 +1,7 @@
 package com.example.ecommerceapplication.service;
 
 import com.example.ecommerceapplication.Exception.ProductNotFoundException;
-import com.example.ecommerceapplication.Util;
+import com.example.ecommerceapplication.utility.Util;
 import com.example.ecommerceapplication.dto.ProductDTO;
 import com.example.ecommerceapplication.model.Category;
 import com.example.ecommerceapplication.model.Product;

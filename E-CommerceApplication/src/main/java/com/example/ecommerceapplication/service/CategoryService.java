@@ -1,6 +1,6 @@
 package com.example.ecommerceapplication.service;
 
-import com.example.ecommerceapplication.Util;
+import com.example.ecommerceapplication.utility.Util;
 import com.example.ecommerceapplication.dto.CategoryDTO;
 import com.example.ecommerceapplication.model.Category;
 import com.example.ecommerceapplication.repository.CetagoryRepository;
