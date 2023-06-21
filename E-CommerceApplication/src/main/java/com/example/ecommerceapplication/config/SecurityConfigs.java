@@ -33,7 +33,7 @@ public class SecurityConfigs {
                .antMatchers("/create","/api/v1/auth/authenticate").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                .authenticationProvider(authenticationProvider())
                .addFilterAfter(jwtTokenGenerationFilter, UsernamePasswordAuthenticationFilter.class)
