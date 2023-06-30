@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/customers")
+@Slf4j
 public class CustomerController {
     private final CustomerService customerService;
     public CustomerController(CustomerService customerService){
@@ -23,7 +24,7 @@ public class CustomerController {
 
     @PostMapping("/register")
     public void registerCustomer(@Valid @RequestBody Customer customer){
-        //log.info("Got request: "+customer);
+        log.info("Got request: "+customer);
         customerService.registerCustomer(customer);
     }
 }
