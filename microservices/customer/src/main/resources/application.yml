@@ -4,3 +4,14 @@ server:
 spring:
   application:
     name: customer
+  datasource:
+    url: jdbc:mariadb://127.0.0.1:3306/db1
+    username: root
+    password: root
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
