@@ -1,4 +1,4 @@
-package org.example.customer.model.responses;
+package org.example.clients.fraud;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

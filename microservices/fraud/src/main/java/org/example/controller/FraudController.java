@@ -1,7 +1,7 @@
 package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.model.response.FraudCheckResponse;
+import org.example.clients.fraud.FraudCheckResponse;
 import org.example.service.FraudCheckService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
