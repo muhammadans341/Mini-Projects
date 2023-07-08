@@ -17,6 +17,7 @@
         <module>clients</module>
         <module>notification</module>
         <module>apigw</module>
+        <module>rabbit-amqp</module>
     </modules>
 
     <properties>
@@ -24,6 +25,7 @@
         <spring-boot-dependencies.version>2.7.9</spring-boot-dependencies.version>
         <spring-cloud.version>2021.0.7</spring-cloud.version>
         <spring-boot-maven.version>2.7.9</spring-boot-maven.version>
+        <image>anas788/${project.artifactId}:${project.version}</image>
     </properties>
 
     <dependencyManagement>
@@ -68,17 +70,65 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.7.9</version>
-            </plugin>
+        <!--Thess plugins will be available in child modules on if we specify ourselves-->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>2.7.9</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <configuration>
+                        <from>
+                            <image>eclipse-temurin:8</image>
+                            <platforms>
+                                <platform>
+                                    <architecture>arm64</architecture>
+                                    <os>linux</os>
+                                </platform>
+                                <platform>
+                                    <architecture>amd64</architecture>
+                                    <os>linux</os>
+                                </platform>
+                            </platforms>
+                        </from>
+                        <to>
+                            <tags>
+                                <tag>latest</tag>
+                            </tags>
+                        </to>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>build</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <!--Thess plugins will automatically be available in child modules-->
+       <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.8.0</version>
                 <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

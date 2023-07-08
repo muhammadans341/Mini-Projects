@@ -1,0 +1,103 @@
+services:
+  mariadb:
+    image: mariadb:10.5
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db1
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    volumes:
+      - ./data:/var/lib/mysql
+    networks:
+      - spring
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - spring
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - spring
+
+  eureka-server:
+    image: anas788/eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - spring
+
+  apigw:
+    image: anas788/apigw
+    container_name: apigw
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "9696:9696"
+    networks:
+      - spring
+    depends_on:
+      - eureka-server
+
+  customer:
+    image: anas788/customer
+    container_name: customer
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8090:8090"
+    networks:
+      - spring
+    depends_on:
+      - eureka-server
+      - rabbitmq
+      - mariadb
+
+  fraud:
+    image: anas788/fraud
+    container_name: fraud
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8091:8091"
+    networks:
+      - spring
+    depends_on:
+      - eureka-server
+      - apigw
+      - rabbitmq
+      - mariadb
+  notification:
+    image: anas788/notification
+    container_name: notification
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8092:8092"
+    networks:
+      - spring
+    depends_on:
+      - eureka-server
+      - apigw
+      - rabbitmq
+      - customer
+      - mariadb
+
+networks:
+  mariadb:
+    driver: bridge
+  spring:
+    driver: bridge
+
+

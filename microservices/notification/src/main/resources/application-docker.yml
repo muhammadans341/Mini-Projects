@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: notification
+  datasource:
+    url: jdbc:mariadb://mariadb:3306/db1
+    username: root
+    password: root
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+  zipkin:
+    base-url: http://zipkin:9411
+  rabbitmq:
+    addresses: rabbitmq:5672
+server:
+  port: 8092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
+
+rabbitmq:
+  queue:
+    notification: notification.queue
