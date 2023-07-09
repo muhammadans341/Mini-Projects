@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+spec:
+  #this service name is provided in metadata of service.yml
+  serviceName: mariadb-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      name: mariadb
+      labels:
+        app: mariadb
+    spec:
+      volumes:
+        - name: mariadb
+          persistentVolumeClaim:
+            claimName: mariadb-pv-volume-claim
+      containers:
+        - name: mariadb
+          image: mariadb:10.6
+          imagePullPolicy: IfNotPresent
+        # This is from configmap.yml
+          envFrom:
+            - configMapRef:
+                name: mariadb-config
+          volumeMounts:
+            - mountPath: /var/lib/mysql/data
+              name: mariadb
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      restartPolicy: Always
