@@ -11,8 +11,8 @@ import org.microservices.customer.model.requests.Customer;
 import org.microservices.clients.fraud.FraudCheckResponse;
 import org.microservices.customer.repository.CustomerRepository;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class CustomerService {
@@ -22,27 +22,31 @@ public class CustomerService {
     private final RabbitMQMessageProducer rabbitMQMessageProducer;
     private final CustomerConfig customerConfig;
 
+    private final KafkaTemplate<String,NotificationRequest> kafkaTemplate;
+
     private final NotificationClient notificationClient;
-    public CustomerService(CustomerMapper customerMapper, CustomerRepository customerRepository, FraudClient fraudClient, AmqpTemplate amqpTemplate, RabbitMQMessageProducer rabbitMQMessageProducer, CustomerConfig customerConfig, NotificationClient notificationClient){
+    public CustomerService(CustomerMapper customerMapper, CustomerRepository customerRepository, FraudClient fraudClient, AmqpTemplate amqpTemplate, RabbitMQMessageProducer rabbitMQMessageProducer, CustomerConfig customerConfig, KafkaTemplate<String,NotificationRequest> kafkaTemplate, NotificationClient notificationClient){
         this.customerRepository=customerRepository;
         this.customerMapper=customerMapper;
         this.fraudClient = fraudClient;
         this.rabbitMQMessageProducer = rabbitMQMessageProducer;
         this.customerConfig = customerConfig;
+        this.kafkaTemplate = kafkaTemplate;
         this.notificationClient = notificationClient;
     }
     public void registerCustomer(Customer customer){
         CustomerEntity entity = customerMapper.customerToCustomerEntity(customer);
         CustomerEntity result = customerRepository.saveAndFlush(entity);
 
-        FraudCheckResponse fraudCheckResponse=fraudClient.isCustomerFraudster(entity.getId());
-        if(fraudCheckResponse!=null && fraudCheckResponse.isFraudster()){
-            throw new IllegalStateException();
-        }
+//        FraudCheckResponse fraudCheckResponse=fraudClient.isCustomerFraudster(entity.getId());
+//        if(fraudCheckResponse!=null && fraudCheckResponse.isFraudster()){
+//            throw new IllegalStateException();
+//        }
         NotificationRequest request=NotificationRequest.builder()
                 .toCustomerId(entity.getId())
                 .toCustomerEmail(entity.getEmail())
                 .message("You are registered successfully").build();
-        rabbitMQMessageProducer.publish(request, customerConfig.getInternalExchange(),customerConfig.getNotificationRoutingKey());
+        //rabbitMQMessageProducer.publish(request, customerConfig.getInternalExchange(),customerConfig.getNotificationRoutingKey());
+        kafkaTemplate.send("notification",request);
     }
 }

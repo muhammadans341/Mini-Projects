@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.microservices.clients.notification.NotificationRequest;
 import org.microservices.notification.service.NotificationService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +14,20 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class NotificationConsumer {
     private final NotificationService notificationService;
-    @RabbitListener(queues = "${rabbitmq.queue.notification}")
-    public void consumeNotification(@Payload NotificationRequest notificationRequest){
-        log.info("Converting back to object");
-
-        log.info("Consuming notification request {}",notificationRequest);
-        //notificationService.sendNotification((NotificationRequest) notificationRequest);
+//    @RabbitListener(queues = "${rabbitmq.queue.notification}")
+//    public void consumeNotification(@Payload NotificationRequest notificationRequest){
+//        log.info("Converting back to object");
+//
+//        log.info("Consuming notification request {}",notificationRequest);
+//        //notificationService.sendNotification((NotificationRequest) notificationRequest);
+//    }
+    @KafkaListener(
+            topics = "notification",
+            containerFactory = "factory",
+            groupId = "grp"
+    )
+    void notificationConsumer(NotificationRequest data){
+        System.out.println(data);
     }
 
 }
