@@ -3,7 +3,7 @@ package com.example.oneToMany.Bootstrap;
 
 import com.example.oneToMany.Repositories.BranchRepository;
 import com.example.oneToMany.Entity.Branch;
-import com.example.oneToMany.Entity.Student;
+import com.example.oneToMany.Entity.StudentTest;
 import com.example.oneToMany.Repositories.StudentRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -23,25 +23,25 @@ public class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Set<Student> s = new HashSet<>();
-        Student student1 =Student.builder().fname("Muhammad").lname("Ans").contactNo("0322").build();
-        Student student2 =Student.builder().fname("Muhammad").lname("Nomi").contactNo("0324").build();
+        Set<StudentTest> s = new HashSet<>();
+        StudentTest studentTest1 = StudentTest.builder().fname("Muhammad").lname("Ans").contactNo("0322").build();
+        StudentTest studentTest2 = StudentTest.builder().fname("Muhammad").lname("Nomi").contactNo("0324").build();
 
         Branch branch = Branch.builder().branchName("BRANCH")
                 .branchShortName("Short name")
                 .description("Description")
-                .students(s)
+                .studentTests(s)
                 .build();
-        student1.setBranch(branch);
-        student2.setBranch(branch);
-        s.add(student1);
-        s.add(student2);
-        branch.setStudents(s);
+        studentTest1.setBranch(branch);
+        studentTest2.setBranch(branch);
+        s.add(studentTest1);
+        s.add(studentTest2);
+        branch.setStudentTests(s);
         branchRepository.save(branch);
 
         Branch result  = branchRepository.findById(1L).get();
-        Set<Student>  test= result.getStudents();
-        for(Student stud:test){
+        Set<StudentTest>  test= result.getStudentTests();
+        for(StudentTest stud:test){
             System.out.println(stud.getFname());
             System.out.println(stud.getLname());
         }

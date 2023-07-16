@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @Builder
-public class Student  {
+public class StudentTest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

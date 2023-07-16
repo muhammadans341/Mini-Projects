@@ -30,5 +30,5 @@ public class Branch {
 
     //uni-directional one-to-many association to Student
     @OneToMany(mappedBy = "branch",  cascade={CascadeType.ALL}, fetch = FetchType.EAGER)
-    private Set<Student> students; // Each branch have many Students (list of)
+    private Set<StudentTest> studentTests; // Each branch have many Students (list of)
 }
