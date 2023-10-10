@@ -29,6 +29,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @SpringBootApplication
@@ -47,8 +49,11 @@ public class SpringDataJPARunner {
             //randomGenerateStudents(studentService);
             //sorting(studentRepository);
             //pagination(studentRepository);
-            addStudentAndBooks(studentRepository, bookRepository,enrollmentRepository,courseRepository);
+           // addStudentAndBooks(studentRepository, bookRepository,enrollmentRepository,courseRepository);
 
+            int age = 10;
+            Function<Integer,Integer> function = (s) -> age /2;
+            System.out.println(function.apply(age));
 
             //studentIdCardRepository.save(new StudentIDCard(null,"12341",null));
 

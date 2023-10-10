@@ -7,16 +7,22 @@ import com.example.dataJPA.repository.StudentRepository;
 import com.example.dataJPA.service.StudentService;
 import com.github.javafaker.Faker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Primary
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class StudentServiceImpl implements StudentService {
 
     @Autowired
@@ -27,6 +33,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Autowired
     private ApplicationContext context;
+
+    private AtomicInteger result = new AtomicInteger(0);
+    //private int result;
     @Override
     public void addStudent(StudentDTO studentDTO) {
 
@@ -88,5 +97,18 @@ public class StudentServiceImpl implements StudentService {
                 .age((value.getAge()))
                 .build()).orElse(null);
 
+    }
+
+    public int testStudent(){
+        System.out.println("result:"+result);
+        for(int i=0;i<1000000;i++){
+            System.out.println("test");
+            result.incrementAndGet();
+        }
+        for(int i=0;i<1000000;i++){
+            System.out.println("test");
+            result.decrementAndGet();
+        }
+        return result.get();
     }
 }

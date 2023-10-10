@@ -1,8 +1,8 @@
-package com.example.ecommerceapplication.config;
+package com.exmaple.springsecurity.config;
 
-import com.example.ecommerceapplication.filter.JWTTokenGenerationFilter;
-import com.example.ecommerceapplication.service.CustomUserDetailsService;
-import lombok.RequiredArgsConstructor;
+
+import com.exmaple.springsecurity.filter.JWTTokenGenerationFilter;
+import com.exmaple.springsecurity.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,26 +20,26 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
-public class SecurityConfigs {
+public class ProjectSecurityConfig  {
 
-    private final CustomUserDetailsService userDetailsService;
-    private final JWTTokenGenerationFilter jwtTokenGenerationFilter;
-
+    @Autowired
+    CustomUserDetailsService userDetailsService;
+    @Autowired
+    JWTTokenGenerationFilter jwtTokenGenerationFilter;
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-       return  http.csrf().disable()
-                .authorizeRequests()
-               .antMatchers("/create","/api/v1/auth/authenticate").permitAll()
-                .anyRequest().permitAll()
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.csrf().disable()
+                .authorizeHttpRequests()
+                .antMatchers("/api/v1/auth/*")
+                .permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-               .authenticationProvider(authenticationProvider())
-               .addFilterAfter(jwtTokenGenerationFilter, UsernamePasswordAuthenticationFilter.class)
-               .build();
+                .authenticationProvider(authenticationProvider());
+                //.addFilterBefore(jwtTokenGenerationFilter, UsernamePasswordAuthenticationFilter.class);
+                return httpSecurity.build();
     }
-
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -54,9 +54,9 @@ public class SecurityConfigs {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

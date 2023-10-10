@@ -31,4 +31,11 @@ public class StudentFakeServiceImpl implements StudentService {
     public StudentDTO fetchStudentEmail(StudentDTO studentDTO) {
         return null;
     }
+
+    @Override
+    public int testStudent() {
+        return 0;
+    }
+
+
 }

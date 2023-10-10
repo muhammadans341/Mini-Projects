@@ -6,24 +6,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping
 public class StudentController {
     @Autowired
     private ApplicationContext applicationContext;
-    private StudentService studentService;
-    public StudentController(ApplicationContext applicationContext,StudentService studentService) {
+
+    @Autowired
+    StudentService studentService;
+    public StudentController(ApplicationContext applicationContext) {
         this.applicationContext=applicationContext;
-        this.studentService=studentService;
     }
 
     @PostMapping("/api/addStudent")
     public StudentDTO addStudent(@RequestBody StudentDTO studentDTO) throws InterruptedException {
+        return null;
+        //studentService.addStudent(studentDTO);
 
-        studentService.addStudent(studentDTO);
-
-        return studentService.fetchStudentEmail(studentDTO);
+        //return studentService.fetchStudentEmail(studentDTO);
 //        ExecutorService executorService = Executors.newFixedThreadPool(200);
 //
 //        for (int i=0;i<200;i++) {
@@ -48,8 +51,15 @@ public class StudentController {
     }
 
     @PostMapping("/api/updateStudent")
-    public void updateStudent(){
 
+    public int updateStudent() throws InterruptedException {
+        StudentService studentService = applicationContext.getBean(StudentService.class);
+       return studentService.testStudent();
+    }
+
+    @PostMapping("/api/greeting")
+    public void greeting(){
+        System.out.println("updating");
     }
 
 }
